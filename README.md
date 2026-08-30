@@ -1,239 +1,261 @@
-# Quantum Machine Learning for Supply Chain Backorder Prediction
+# QML-Supply-Chain
 
-A comparative study of **classical machine learning** and **quantum machine learning (QML)** approaches for predicting product backorders in supply chain systems.
+### Backorder Prediction with Classical & Quantum Machine Learning
 
-This project investigates whether quantum machine learning models can provide meaningful predictive performance on a real-world supply chain classification problem, and compares their results against several widely used classical machine learning algorithms.
+A machine learning study that investigates **product backorder prediction in supply chain systems** using both conventional machine learning algorithms and quantum machine learning models.
 
----
-
-## 📌 Project Overview
-
-Backorders occur when customer demand cannot be immediately fulfilled because the required product is unavailable in inventory. Accurately predicting potential backorders can help organizations improve:
-
-* Inventory planning
-* Stock availability
-* Procurement decisions
-* Demand management
-* Customer fulfillment
-* Supply chain efficiency
-
-This project formulates **backorder prediction as a binary classification problem** and evaluates both classical and quantum machine learning models.
-
-The workflow uses a reduced feature space containing **three selected features**, allowing the quantum models to operate with a small number of qubits while keeping the comparison with classical models consistent.
-
-The project focuses on **benchmarking classical ML against QML**, rather than claiming universal quantum advantage.
+The project uses a compact set of three supply-chain features and compares the performance of classical classifiers with a **Variational Quantum Classifier (VQC)** and a **Quantum Neural Network Classifier (QNNC)**.
 
 ---
 
-## 🎯 Objectives
+## 🔎 Problem Statement
 
-The main objectives of this project are:
+In a supply chain, a product can go on backorder when customer demand cannot be fulfilled immediately due to insufficient available inventory.
 
-1. Predict whether a product will go on backorder.
-2. Select a compact feature set suitable for quantum circuit encoding.
-3. Implement multiple classical machine learning models.
-4. Implement quantum machine learning classifiers using Qiskit.
-5. Compare classical and quantum models using common classification metrics.
-6. Study the effect of quantum circuit configuration on model performance.
-7. Explore the practical use of QML for supply chain prediction problems.
+Being able to identify products that are likely to go on backorder can support better decisions around:
 
----
+* Inventory management
+* Procurement
+* Stock replenishment
+* Demand planning
+* Order fulfillment
 
-## 📊 Dataset
-
-The repository contains separate training and testing datasets.
-
-| Dataset  | Samples | Features |
-| -------- | ------: | -------: |
-| Training |  10,000 |        3 |
-| Testing  |   4,000 |        3 |
-
-The target variable is:
+This project treats the problem as a **binary classification task**, where the objective is to predict the value of:
 
 ```text
 went_on_backorder
 ```
 
-This is a **binary classification** target.
+---
 
-### Selected Features
+## 🧩 Approach
 
-The three features used in the repository are:
-
-* `national_inv` — current inventory level
-* `forecast_3_month` — forecasted demand over the next three months
-* `in_transit_qty` — quantity currently in transit
-
-The testing dataset in the repository confirms these three features along with the `went_on_backorder` target.
-
-### Dataset Files
+The project follows a simple experimental pipeline:
 
 ```text
-Training_Top3Features.csv
-Testing_Top3Features.csv
+Supply Chain Dataset
+        │
+        ▼
+Feature Selection
+        │
+        ▼
+3 Selected Features
+        │
+        ├─────────────────────┐
+        ▼                     ▼
+Classical ML              Quantum ML
+        │                     │
+        ▼                     ▼
+8 Classifiers            VQC + QNNC
+        │                     │
+        └──────────┬──────────┘
+                   ▼
+             Model Evaluation
+                   │
+                   ▼
+          Performance Comparison
 ```
 
-The training dataset contains 10,000 samples, while the testing dataset contains 4,000 samples.
+The same prediction problem is approached from both classical and quantum perspectives.
 
 ---
 
-# 🧠 Models Implemented
-
-The project is divided into two main categories:
+## 📁 What's Inside the Repository?
 
 ```text
-Classical Machine Learning
-        │
-        ├── CatBoost
-        ├── LightGBM
-        ├── XGBoost
-        ├── Random Forest
-        ├── ANN
-        ├── SVM
-        ├── KNN
-        └── Decision Tree
-
-Quantum Machine Learning
-        │
-        ├── Variational Quantum Classifier (VQC)
-        └── Quantum Neural Network Classifier (QNNC)
+QML-Supply-Chain/
+│
+├── ClassicalML.ipynb
+├── VQC.ipynb
+├── QNNC.ipynb
+│
+├── Training_Top3Features.csv
+├── Testing_Top3Features.csv
+│
+├── catboost_info.zip
+│
+└── README.md
 ```
 
----
+### Notebooks
 
-# 💻 Classical Machine Learning
+| File                | Purpose                                        |
+| ------------------- | ---------------------------------------------- |
+| `ClassicalML.ipynb` | Training and comparison of classical ML models |
+| `VQC.ipynb`         | Variational Quantum Classifier experiments     |
+| `QNNC.ipynb`        | Quantum Neural Network Classifier experiments  |
 
-The `ClassicalML.ipynb` notebook implements and compares eight classical classifiers:
+### Data
 
-### Ensemble Models
-
-* **CatBoost**
-* **LightGBM**
-* **XGBoost**
-* **Random Forest**
-
-### Traditional / Neural Models
-
-* **Artificial Neural Network (ANN)**
-* **Support Vector Machine (SVM)**
-* **K-Nearest Neighbors (KNN)**
-* **Decision Tree**
-
-Hyperparameter tuning is performed using **GridSearchCV with 3-fold cross-validation**, with F1 score used as the model-selection criterion.
+| File                        | Description   |
+| --------------------------- | ------------- |
+| `Training_Top3Features.csv` | Training data |
+| `Testing_Top3Features.csv`  | Testing data  |
 
 ---
 
-# ⚛️ Quantum Machine Learning
+# 📦 Dataset
 
-The repository contains two quantum machine learning implementations.
+The experiments use two prepared CSV files containing three selected features.
 
-## 1. Variational Quantum Classifier (VQC)
+### Dataset split
 
-Implementation:
+| Split     |    Samples |
+| --------- | ---------: |
+| Training  |     10,000 |
+| Testing   |      4,000 |
+| **Total** | **14,000** |
+
+### Input variables
+
+The models operate on:
+
+```text
+national_inv
+forecast_3_month
+in_transit_qty
+```
+
+The prediction target is:
+
+```text
+went_on_backorder
+```
+
+Therefore, each sample can be represented as:
+
+```text
+X = [national_inv, forecast_3_month, in_transit_qty]
+
+y = went_on_backorder
+```
+
+The reduced three-feature representation is particularly useful for the quantum experiments because it allows the input to be encoded using a small number of qubits.
+
+---
+
+# 🖥️ Classical Baseline
+
+Before evaluating quantum models, the project establishes a classical ML baseline.
+
+The following algorithms are implemented in `ClassicalML.ipynb`:
+
+### Tree / Ensemble Models
+
+* CatBoost
+* XGBoost
+* LightGBM
+* Random Forest
+
+### Other Classifiers
+
+* Artificial Neural Network
+* Support Vector Machine
+* K-Nearest Neighbors
+* Decision Tree
+
+The classical notebook uses **GridSearchCV** to explore model hyperparameters and uses cross-validation during model selection.
+
+This provides a reference point for evaluating how the quantum approaches perform on the same prediction task.
+
+---
+
+# ⚛️ Quantum Experiments
+
+The quantum side of the project consists of two separate implementations.
+
+## Variational Quantum Classifier
+
+Notebook:
 
 ```text
 VQC.ipynb
 ```
 
-The VQC implementation uses Qiskit's `VQC` algorithm with configurable quantum circuit components.
+The VQC experiments investigate how different quantum circuit configurations influence classification performance.
 
-### Quantum Components
+### Circuit components
 
-**Feature Maps**
+**Feature maps**
 
 * Pauli Feature Map
 * ZZ Feature Map
 
-**Ansatz**
+**Variational ansatz**
 
 * RealAmplitudes
 
-**Entanglement**
+**Entanglement structures**
 
 * Linear
 * Full
 * Circular
 
-**Optimizer**
-
-* L-BFGS-B
-
-**Loss**
-
-* Cross-entropy
-
-The notebook allows the number of feature-map and ansatz repetitions to be varied during experimentation.
-
-### VQC Configuration
-
-The experiments use:
+The circuit depth can be modified through:
 
 ```text
-Number of features : 3
-Feature-map reps   : 1–5
-Ansatz reps        : 1–5
-Feature maps       : Pauli / ZZ
-Entanglement       : Linear / Full / Circular
-Optimizer          : L-BFGS-B
+Feature Map Repetitions
+Ansatz Repetitions
 ```
+
+The optimization is performed using **L-BFGS-B**.
 
 ---
 
-## 2. Quantum Neural Network Classifier (QNNC)
+## Quantum Neural Network Classifier
 
-Implementation:
+Notebook:
 
 ```text
 QNNC.ipynb
 ```
 
-The QNNC notebook implements a parameterized quantum neural network using **Qiskit Machine Learning** and integrates the quantum model with **PyTorch** for optimization.
+The QNNC implementation uses Qiskit Machine Learning to construct a trainable quantum neural network.
 
-The current implementation uses:
+The implementation includes:
 
-* Parameterized quantum circuits
 * `SamplerQNN`
 * `TorchConnector`
 * `StatevectorSampler`
-* Pauli feature mapping
+* Parameterized feature maps
 * Real-Amplitudes ansatz
-* Linear, full and circular entanglement configurations
+* Configurable entanglement
 
-The notebook currently uses:
+The trainable circuit parameters are optimized through the PyTorch training pipeline.
+
+### Current QNNC environment
 
 ```text
-Qiskit       : 2.5.2
-Qiskit ML    : 0.9.1
+Qiskit                  2.5.2
+Qiskit Machine Learning 0.9.1
 ```
 
-for the QNNC implementation.
-
-The QNNC experiments are designed to investigate how quantum circuit structure and trainable parameters affect binary backorder classification.
+> **Note:** QNNC is treated here as a quantum model implementation. This repository does not claim a separate hybrid-model benchmark.
 
 ---
 
-# 📈 Classical Model Results
+# 📊 Experimental Results
 
-The classical models achieve strong performance on the 4,000-sample test set.
+## Classical Models
 
-| Model         |   Accuracy |   F1 Score |    ROC AUC |
+The strongest classical result in the experiments comes from the Artificial Neural Network.
+
+| Model         |   Accuracy |         F1 |    ROC AUC |
 | ------------- | ---------: | ---------: | ---------: |
 | **ANN**       | **81.55%** | **0.8112** | **0.8762** |
-| XGBoost       |     81.27% |     0.8100 |     0.8738 |
+| XGBoost       |     81.35% |     0.8111 |     0.8737 |
 | LightGBM      |     81.25% |     0.8080 |     0.8740 |
 | CatBoost      |     81.17% |     0.8046 |     0.8740 |
 | SVM           |     80.80% |     0.8050 |     0.8678 |
-| Random Forest |     80.67% |     0.8035 |     0.8658 |
 | Decision Tree |     80.10% |     0.7937 |     0.8606 |
-| KNN           |     78.02% |     0.7721 |     0.8382 |
+| KNN           |     80.07% |     0.7881 |     0.8428 |
+| Random Forest |     79.55% |     0.7860 |     0.8543 |
 
-These results are generated directly by the classical notebook.
-
-### Best Classical Model
-
-**ANN** achieved the highest test accuracy:
+### Best classical result
 
 ```text
+ANN
+
 Accuracy : 81.55%
 F1 Score : 0.8112
 ROC AUC  : 0.8762
@@ -241,145 +263,184 @@ ROC AUC  : 0.8762
 
 ---
 
-# ⚛️ VQC Results
+# 🧪 VQC Results
 
-For the VQC experiment with:
-
-```text
-Feature Map     : Pauli
-Feature Map Reps: 1
-Ansatz Reps     : 1
-Entanglement    : Linear
-```
-
-the recorded results were:
-
-| Metric    | Training |    Testing |
-| --------- | -------: | ---------: |
-| Accuracy  |   69.45% | **67.73%** |
-| F1 Score  |   69.81% | **68.24%** |
-| Recall    |   70.64% | **69.35%** |
-| Precision |   69.00% | **67.17%** |
-
-The VQC notebook records the final objective value at approximately `0.9496` after convergence.
-
----
-
-# 🔬 Classical vs Quantum
-
-The experiments show a clear difference between the classical and quantum approaches on this dataset.
-
-| Category               | Best Recorded Accuracy |
-| ---------------------- | ---------------------: |
-| **Classical ML — ANN** |             **81.55%** |
-| **Quantum ML — VQC**   |             **67.73%** |
-
-The results demonstrate that classical models currently perform better on this particular dataset and experimental setup.
-
-This does **not** imply that quantum machine learning is ineffective. Instead, it provides a practical benchmark for understanding the current performance of small quantum circuits on a supply chain classification task.
-
----
-
-# 🔍 Key Observations
-
-### Classical Models
-
-* ANN achieved the highest recorded accuracy.
-* XGBoost, LightGBM and CatBoost produced competitive results.
-* Ensemble methods consistently achieved around 80%+ accuracy.
-* Classical models benefit from mature optimization and efficient processing of tabular datasets.
-
-### Quantum Models
-
-* VQC successfully learns the backorder classification task with a compact three-feature representation.
-* The choice of feature map, ansatz repetitions and entanglement topology affects performance.
-* Quantum models operate with a very small feature dimension, making them suitable for studying QML under limited qubit requirements.
-* The current results do not demonstrate quantum advantage over the classical baselines.
-
----
-
-# 🏗️ Repository Structure
-
-The current repository contains:
+For the recorded VQC experiment using:
 
 ```text
-QML-Supply-Chain/
-│
-├── 📓 ClassicalML.ipynb
-│   └── Classical ML model training and comparison
-│
-├── 📓 VQC.ipynb
-│   └── Variational Quantum Classifier
-│
-├── 📓 QNNC.ipynb
-│   └── Quantum Neural Network Classifier
-│
-├── 📊 Training_Top3Features.csv
-│   └── 10,000 training samples
-│
-├── 📊 Testing_Top3Features.csv
-│   └── 4,000 testing samples
-│
-├── 📦 catboost_info.zip
-│   └── CatBoost-related artifacts
-│
-└── 📄 README.md
+Feature Map      : Pauli
+Feature Map Reps : 1
+Ansatz Reps      : 1
+Entanglement     : Linear
 ```
 
-These are the files currently present in the GitHub repository.
+the model achieved approximately:
+
+| Metric    |    Result |
+| --------- | --------: |
+| Accuracy  | **67.7%** |
+| F1 Score  | **0.682** |
+| Precision | **0.672** |
+| Recall    | **0.694** |
+
+The VQC experiment demonstrates that a small parameterized quantum circuit can learn the binary classification task, although its recorded performance is below the classical baselines.
 
 ---
 
-# 🛠️ Technologies Used
+# ⚖️ Classical vs Quantum
 
-## Classical Machine Learning
+One of the main purposes of the repository is to make this comparison explicit.
 
-* Python
-* NumPy
-* Pandas
-* Scikit-learn
-* XGBoost
-* LightGBM
-* CatBoost
+```text
+                    TEST ACCURACY
 
-## Quantum Machine Learning
+ANN                  ████████████████████  81.55%
+XGBoost              ████████████████████  81.35%
+LightGBM             ████████████████████  81.25%
+CatBoost             ████████████████████  81.17%
 
-* Qiskit
-* Qiskit Machine Learning
-* PyTorch
-* NumPy
-* Scikit-learn
+VQC                  █████████████████     67.7%
+```
+
+### What this tells us
+
+For the current dataset and experimental configuration:
+
+**Classical models perform better than the evaluated VQC configuration.**
+
+That is an important result in itself. The purpose of the project is not to assume that quantum models must outperform classical algorithms, but to experimentally investigate their behavior on the same classification problem.
 
 ---
 
-# ⚙️ Installation
+# 🧠 Why Use Only Three Features?
+
+Quantum computers currently operate under significant resource constraints, particularly when working with simulated or near-term quantum circuits.
+
+Using three selected features provides a manageable input space:
+
+```text
+3 classical features
+       ↓
+3 quantum input parameters
+       ↓
+3-qubit circuit
+```
+
+This makes it possible to investigate quantum classifiers without immediately introducing a large number of qubits or a very deep circuit.
+
+At the same time, keeping the feature representation consistent makes the classical-vs-quantum comparison easier to interpret.
+
+---
+
+# 🔬 What Was Investigated?
+
+The quantum experiments focus on several circuit-design choices.
+
+### 1. Feature Map
+
+Different feature maps determine how classical data is encoded into the quantum circuit.
+
+```text
+Pauli Feature Map
+        vs
+ZZ Feature Map
+```
+
+### 2. Ansatz Depth
+
+The number of repetitions controls the structure and parameter count of the variational circuit.
+
+```text
+reps = 1
+reps = 2
+...
+reps = 5
+```
+
+### 3. Entanglement
+
+The project investigates:
+
+```text
+Linear
+Full
+Circular
+```
+
+entanglement structures.
+
+These choices can significantly affect the behavior and performance of a variational quantum classifier.
+
+---
+
+# 🛠️ Tech Stack
+
+### Machine Learning
+
+```text
+Python
+NumPy
+Pandas
+Scikit-learn
+XGBoost
+LightGBM
+CatBoost
+PyTorch
+```
+
+### Quantum Computing
+
+```text
+Qiskit
+Qiskit Machine Learning
+```
+
+### Development
+
+```text
+Jupyter Notebook
+Git
+GitHub
+```
+
+---
+
+# ⚙️ Setup
 
 Clone the repository:
 
 ```bash
 git clone https://github.com/sohammondal29/QML-Supply-Chain.git
+
 cd QML-Supply-Chain
 ```
 
-Install the classical ML dependencies:
+Install the required Python packages:
 
 ```bash
-pip install numpy pandas scikit-learn xgboost lightgbm catboost
+pip install -r requirements.txt
 ```
 
-For the current QNNC implementation:
+For the QNNC experiments, the notebook uses:
 
 ```bash
-pip install "qiskit==2.5.2" "qiskit-machine-learning==0.9.1"
+pip install "qiskit==2.5.2"
+pip install "qiskit-machine-learning==0.9.1"
 ```
 
-The QNNC notebook itself pins these versions.
+Launch Jupyter:
+
+```bash
+jupyter notebook
+```
+
+Then open the required notebook.
 
 ---
 
-# 🚀 Running the Project
+# ▶️ Running the Experiments
 
-## 1. Classical Models
+## Classical ML
 
 Open:
 
@@ -387,19 +448,18 @@ Open:
 ClassicalML.ipynb
 ```
 
-The notebook:
+Run the notebook to:
 
-1. Loads the training and testing CSV files.
-2. Separates features and target.
-3. Defines eight classical classifiers.
-4. Performs GridSearchCV.
-5. Trains the best configuration for each model.
-6. Generates predictions.
-7. Calculates accuracy, F1 score, ROC AUC and confusion matrices.
+1. Load the prepared datasets.
+2. Separate features and target.
+3. Train the classical classifiers.
+4. Perform hyperparameter search.
+5. Evaluate the selected models.
+6. Compare their classification metrics.
 
 ---
 
-## 2. Variational Quantum Classifier
+## VQC
 
 Open:
 
@@ -407,30 +467,16 @@ Open:
 VQC.ipynb
 ```
 
-The notebook allows experimentation with:
+The notebook can be used to experiment with different:
 
-```text
-Feature Map
-    ├── Pauli
-    └── ZZ
-
-Entanglement
-    ├── Linear
-    ├── Full
-    └── Circular
-
-Feature Map Repetitions
-    └── 1–5
-
-Ansatz Repetitions
-    └── 1–5
-```
-
-The model is optimized using L-BFGS-B.
+* Feature maps
+* Entanglement structures
+* Feature-map repetitions
+* Ansatz repetitions
 
 ---
 
-## 3. Quantum Neural Network
+## QNNC
 
 Open:
 
@@ -438,39 +484,39 @@ Open:
 QNNC.ipynb
 ```
 
-The notebook contains the QNNC implementation using Qiskit Machine Learning and PyTorch.
+The notebook contains the quantum neural network implementation and its PyTorch-based training procedure.
 
-> **Note:** Quantum circuit simulation can be computationally expensive, especially as the dataset size, number of epochs, circuit depth, and number of experiments increase.
+> Quantum circuit simulation can be significantly slower than conventional ML, especially when increasing the dataset size, circuit depth, number of training epochs, or number of experiments.
 
 ---
 
-# 📊 Evaluation Metrics
+# 📐 Evaluation
 
-The project evaluates the models using:
+The models are evaluated using standard classification metrics.
 
 ### Accuracy
 
-Measures the percentage of correctly classified samples.
+Overall proportion of correct predictions.
 
 ### Precision
 
-Measures how many predicted backorders were actually backorders.
+How many samples predicted as backorders were actually backorders.
 
 ### Recall
 
-Measures how many actual backorders were correctly identified.
+How many actual backorders were successfully detected.
 
 ### F1 Score
 
-Provides a balance between precision and recall.
+Harmonic mean of precision and recall.
 
-### ROC AUC
+### ROC-AUC
 
-Measures the model's ability to distinguish between the two classes across classification thresholds.
+Measures discrimination between the two classes across different thresholds.
 
 ### Confusion Matrix
 
-Provides the counts of:
+Used to inspect:
 
 ```text
 True Positives
@@ -481,72 +527,75 @@ False Negatives
 
 ---
 
-# 💡 Why Backorder Prediction?
+# 💭 Takeaways
 
-Backorder prediction is an important supply chain problem because incorrect inventory decisions can lead to:
+A few conclusions emerge from the current experiments:
 
-* Delayed customer orders
-* Lost sales
-* Excess inventory
-* Increased operational costs
-* Poor customer satisfaction
+### Classical ML remains highly competitive
 
-A predictive model can help identify products that are likely to experience supply shortages before the backorder occurs.
+The classical models achieve around 80%+ test accuracy, with the ANN reaching the highest recorded performance.
+
+### Small quantum circuits can solve the task to some extent
+
+The VQC achieves meaningful classification performance despite using only three input features and a small variational circuit.
+
+### Quantum advantage is not demonstrated
+
+The current experiments do **not** establish a quantum advantage. On this dataset and configuration, the classical models outperform the tested quantum approach.
+
+### Circuit design matters
+
+Feature-map choice, ansatz depth and entanglement topology can influence quantum model performance considerably.
 
 ---
 
-# 🔮 Future Work
+# 🚧 Limitations
 
-Possible directions for extending this project include:
+The current project has several limitations:
 
-### Quantum Model Improvements
+* Only three features are used for the quantum experiments.
+* Quantum models are evaluated primarily through circuit simulation.
+* The available quantum resources restrict circuit size and depth.
+* The classical models benefit from highly mature optimization algorithms.
+* The experiments do not demonstrate a quantum computational speedup.
+* Results depend on the selected circuit configuration and training procedure.
 
-* Larger quantum feature spaces
-* More advanced feature maps
-* Deeper variational circuits
-* Alternative quantum kernels
-* Noise-aware experiments
+These limitations are important when interpreting the classical-vs-quantum comparison.
+
+---
+
+# 🔮 Possible Extensions
+
+Future experiments could explore:
+
+* More sophisticated quantum feature maps
+* Quantum kernel methods
+* Additional QML classifiers
+* Larger feature subsets
+* Noise-aware simulations
 * Error mitigation
-* Experiments on real quantum hardware
+* Real quantum hardware
+* More extensive circuit-depth experiments
+* Additional supply-chain datasets
+* Statistical comparison over multiple random seeds
 
-### Data & Modeling
-
-* Use the complete feature set instead of only three selected features.
-* Investigate additional feature-selection techniques.
-* Perform larger-scale hyperparameter searches.
-* Compare additional classical and quantum classifiers.
-* Evaluate robustness across different train/test splits.
-
-### Quantum Hardware
-
-The current experiments primarily focus on quantum circuit simulation. Future work could evaluate the models on available quantum hardware and study the impact of hardware noise and limited connectivity.
+A particularly interesting direction would be investigating whether carefully engineered quantum models can close the gap with classical methods as the feature representation and circuit architecture become richer.
 
 ---
 
-# 📚 Research Perspective
+# 📚 Project Motivation
 
-This project is intended as an experimental comparison between **classical machine learning and quantum machine learning for supply chain backorder prediction**.
+The broader motivation behind this work is to explore how emerging quantum computing techniques could eventually be applied to practical machine learning problems.
 
-The results show that classical models currently provide stronger performance for this particular tabular dataset, while the quantum experiments demonstrate how variational quantum circuits can be applied to the same classification problem.
+Supply chain management provides an interesting test case because it involves:
 
-Rather than assuming quantum advantage, the project uses classical models as practical baselines and investigates where current QML approaches stand relative to them.
+* Large numbers of products
+* Complex demand patterns
+* Inventory constraints
+* Uncertain future requirements
+* Cost-sensitive decisions
 
----
-
-# 🤝 Contributing
-
-Contributions and improvements are welcome.
-
-Potential areas include:
-
-* New classical ML models
-* New quantum classifiers
-* Improved feature selection
-* Alternative quantum feature maps
-* Circuit optimization
-* Quantum hardware experiments
-* Improved evaluation methodologies
-* Additional supply chain datasets
+Backorder prediction provides a concrete classification problem through which classical and quantum approaches can be studied side by side.
 
 ---
 
@@ -561,34 +610,8 @@ https://github.com/sohammondal29
 
 ---
 
-# ⭐ Acknowledgements
+# ⭐ If You Find This Project Interesting
 
-This project makes use of open-source machine learning and quantum computing frameworks, particularly:
+Feel free to explore the notebooks, experiment with different quantum circuit configurations, and compare the results with the classical baselines.
 
-* Qiskit
-* Qiskit Machine Learning
-* PyTorch
-* Scikit-learn
-* XGBoost
-* LightGBM
-* CatBoost
-
----
-
-## 📌 Summary
-
-This project explores **backorder prediction in supply chain management using both classical and quantum machine learning**.
-
-The current experiments demonstrate:
-
-```text
-Classical ML
-      ↓
-ANN → 81.55% Accuracy
-
-Quantum ML
-      ↓
-VQC → 67.73% Accuracy
-```
-
-The comparison provides a practical baseline for studying the current capabilities and limitations of quantum machine learning on a real-world tabular classification problem.
+The repository is intended as an experimental starting point for studying **Quantum Machine Learning on real-world supply chain data**.
