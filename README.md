@@ -398,7 +398,7 @@ Qiskit Machine Learning
 ### Development
 
 ```text
-Jupyter Notebook
+Google Colab
 Git
 GitHub
 ```
@@ -428,13 +428,7 @@ pip install "qiskit==2.5.2"
 pip install "qiskit-machine-learning==0.9.1"
 ```
 
-Launch Jupyter:
-
-```bash
-jupyter notebook
-```
-
-Then open the required notebook.
+Open the required notebook.
 
 ---
 
